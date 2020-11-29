@@ -105,6 +105,7 @@ chmod -R 750 /home/${MYUSER}/${MYWEBFOLDER}_NOSSL
 
 mkdir /home/${MYUSER}/${MYWEBFOLDER}_SSL
 
+rm /home/${MYUSER}/${MYWEBFOLDER}_SSL/index.html
 echo '<html><body>Hello World! You are secure!</body></html>' >> /home/${MYUSER}/${MYWEBFOLDER}_SSL/index.html
 
 chown -R ${MYUSER}:www-data /home/${MYUSER}/${MYWEBFOLDER}_SSL

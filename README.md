@@ -94,23 +94,13 @@ chmod go-w /home/${MYUSER}
 Add directory
 
 ```
-mkdir /home/${MYUSER}/
+mkdir /home/${MYUSER}/${MYWEBFOLDER}
 
-mkdir /home/${MYUSER}/${MYWEBFOLDER}_NOSSL
+rm /home/${MYUSER}/${MYWEBFOLDER}/index.html
+echo '<html><body>Hello World!</body></html>' >> /home/${MYUSER}/${MYWEBFOLDER}/index.html
 
-rm /home/${MYUSER}/${MYWEBFOLDER}_NOSSL/index.html
-echo "<html><body>Hello World You are NOT secure Please use <a href=\"https://${MYDOMAINNAME}\">SSL connexion</a></body></html>" >> /home/${MYUSER}/${MYWEBFOLDER}_NOSSL/index.html
-
-chown -R ${MYUSER}:www-data /home/${MYUSER}/${MYWEBFOLDER}_NOSSL
-chmod -R 750 /home/${MYUSER}/${MYWEBFOLDER}_NOSSL
-
-mkdir /home/${MYUSER}/${MYWEBFOLDER}_SSL
-
-rm /home/${MYUSER}/${MYWEBFOLDER}_SSL/index.html
-echo '<html><body>Hello World! You are secure!</body></html>' >> /home/${MYUSER}/${MYWEBFOLDER}_SSL/index.html
-
-chown -R ${MYUSER}:www-data /home/${MYUSER}/${MYWEBFOLDER}_SSL
-chmod -R 750 /home/${MYUSER}/${MYWEBFOLDER}_SSL
+chown -R ${MYUSER}:www-data /home/${MYUSER}/${MYWEBFOLDER}
+chmod -R 750 /home/${MYUSER}/${MYWEBFOLDER}
 ```
 
 ## Install Domain Name
@@ -118,37 +108,20 @@ chmod -R 750 /home/${MYUSER}/${MYWEBFOLDER}_SSL
 Create the host parameters for Apache and our domains **hello-world.hephaiscode.com**
 
 ```
-MYAPACHECONFNOSSL=/etc/nginx/sites-available/${MYDOMAINNAME}_NOSSL
-rm ${MYAPACHECONFNOSSL}
-echo 'server {' >> ${MYAPACHECONFNOSSL}
-echo " listen 80;" >> ${MYAPACHECONFNOSSL}
-echo " listen [::]:80;" >> ${MYAPACHECONFNOSSL}
-echo " root /home/${MYUSER}/${MYWEBFOLDER}_NOSSL;" >> ${MYAPACHECONFNOSSL}
-echo " index index.html index.htm index.nginx-debian.html;" >> ${MYAPACHECONFNOSSL}
-echo " server_name ${MYDOMAINNAME};" >> ${MYAPACHECONFNOSSL}
-echo ' location / {' >> ${MYAPACHECONFNOSSL}
-echo '  try_files $uri $uri/ =404;' >> ${MYAPACHECONFNOSSL}
-echo ' }' >> ${MYAPACHECONFNOSSL}
-echo '}' >> ${MYAPACHECONFNOSSL}
+MYNGINXCONFIG=/etc/nginx/sites-available/${MYDOMAINNAME}
+rm ${MYNGINXCONFIG}
+echo 'server {' >> ${MYNGINXCONFIG}
+echo " listen 80;" >> ${MYNGINXCONFIG}
+echo " listen [::]:80;" >> ${MYNGINXCONFIG}
+echo " root /home/${MYUSER}/${MYWEBFOLDER};" >> ${MYNGINXCONFIG}
+echo " index index.html index.htm index.nginx-debian.html;" >> ${MYNGINXCONFIG}
+echo " server_name ${MYDOMAINNAME};" >> ${MYNGINXCONFIG}
+echo ' location / {' >> ${MYNGINXCONFIG}
+echo '  try_files $uri $uri/ =404;' >> ${MYNGINXCONFIG}
+echo ' }' >> ${MYNGINXCONFIG}
+echo '}' >> ${MYNGINXCONFIG}
 
-ln -s /etc/nginx/sites-available/${MYDOMAINNAME}_NOSSL /etc/nginx/sites-enabled/
-
-systemctl restart nginx
-
-MYAPACHECONFSSL=/etc/nginx/sites-available/${MYDOMAINNAME}_SSL
-rm ${MYAPACHECONFSSL}
-echo 'server {' >> ${MYAPACHECONFSSL}
-echo " listen 403 ssl;" >> ${MYAPACHECONFSSL}
-echo " listen [::]:403;" >> ${MYAPACHECONFSSL}
-echo " root /home/${MYUSER}/${MYWEBFOLDER}_SSL;" >> ${MYAPACHECONFSSL}
-echo " index index.html index.htm index.nginx-debian.html;" >> ${MYAPACHECONFSSL}
-echo " server_name ${MYDOMAINNAME};" >> ${MYAPACHECONFSSL}
-echo ' location / {' >> ${MYAPACHECONFSSL}
-echo '  try_files $uri $uri/ =404;' >> ${MYAPACHECONFSSL}
-echo ' }' >> ${MYAPACHECONFSSL}
-echo '}' >> ${MYAPACHECONFSSL}
-
-ln -s /etc/nginx/sites-available/${MYDOMAINNAME}_SSL /etc/nginx/sites-enabled/
+ln -s /etc/nginx/sites-available/${MYDOMAINNAME} /etc/nginx/sites-enabled/
 
 systemctl restart nginx
 

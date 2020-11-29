@@ -2,6 +2,7 @@
 
 [![OS badge](https://img.shields.io/badge/OS-Debian-red.svg)](https://www.debian.org)
 [![Server badge](https://img.shields.io/badge/Server-Nginx-blue.svg)](https://www.nginx.com)
+[![SSL badge](https://img.shields.io/badge/SSL-certbot-blue.svg)](https://certbot.eff.org)
 [![Format badge](https://img.shields.io/badge/Format-HTML-green.svg)](https://lyty.dev/html/index.html)
 
 ## Objectif 
@@ -98,7 +99,7 @@ mkdir /home/${MYUSER}/
 mkdir /home/${MYUSER}/${MYWEBFOLDER}_NOSSL
 
 rm /home/${MYUSER}/${MYWEBFOLDER}_NOSSL/index.html
-echo '<html><body>Hello World! You are NOT secure! Please use <a href="https://hello-world.hephaiscode.com">SSL connexion</a>!</body></html>' >> /home/${MYUSER}/${MYWEBFOLDER}_NOSSL/index.html
+echo "<html><body>Hello World You are NOT secure Please use <a href=\"https://${MYDOMAINNAME}\">SSL connexion</a></body></html>" >> /home/${MYUSER}/${MYWEBFOLDER}_NOSSL/index.html
 
 chown -R ${MYUSER}:www-data /home/${MYUSER}/${MYWEBFOLDER}_NOSSL
 chmod -R 750 /home/${MYUSER}/${MYWEBFOLDER}_NOSSL
@@ -137,7 +138,7 @@ systemctl restart nginx
 MYAPACHECONFSSL=/etc/nginx/sites-available/${MYDOMAINNAME}_SSL
 rm ${MYAPACHECONFSSL}
 echo 'server {' >> ${MYAPACHECONFSSL}
-echo " listen 403;" >> ${MYAPACHECONFSSL}
+echo " listen 403 ssl;" >> ${MYAPACHECONFSSL}
 echo " listen [::]:403;" >> ${MYAPACHECONFSSL}
 echo " root /home/${MYUSER}/${MYWEBFOLDER}_SSL;" >> ${MYAPACHECONFSSL}
 echo " index index.html index.htm index.nginx-debian.html;" >> ${MYAPACHECONFSSL}
